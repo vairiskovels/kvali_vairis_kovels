@@ -8,12 +8,24 @@
     <main id="reports-section" class="main">
         <div class="reports-wrap">
             <div class="section-header-wrap">
-                <h2 class="section-header" id="section-header">Total expenses this year</h2>
-                <select name="reports-select" id="reports-select">
-                    <option value="1" selected>Expenses this year</option>
-                    <option value="2">Expenses by category</option>
-                    <option value="3">Top 10 expenses this month</option>
-                </select>
+                <h2 class="section-header" id="section-header">Total expenses in {{ $selectedYear }}</h2>
+                <div class="selects">
+                    <select name="reports-select" id="reports-select">
+                        <option value="1" selected>Expenses in {{ $selectedYear }}</option>
+                        <option value="2">Expenses by category</option>
+                        <option value="3">Top 10 expenses this month</option>
+                    </select>
+                    <select name="years" id="categories-years">
+                        @foreach ($years as $data)
+                            @if ($data->year == $selectedYear)
+                                <option value="{{ $data->year }}" selected>{{ $data->year }}</option>
+                            @else
+                                <option value="{{ $data->year }}">{{ $data->year }}</option>
+                            @endif
+                            
+                        @endforeach
+                    </select>
+                </div>
             </div>
             <div class="report-wrap show" id="expenses-by-month">
                 <div class="report-card">
@@ -50,6 +62,8 @@
         var byMonthQuery = {!! json_encode($byMonth) !!};
         var byCategoryQuery = {!! json_encode($byCategory) !!};
         var top10 = {!! json_encode($top10) !!};
+
+        console.log(byCategoryQuery);
 
         const months = ['January', 'February', 'March', 'April','May','June','July','August','September','October','November','December'];
 
@@ -186,6 +200,11 @@
                     }
                 }
             }
+        });
+
+        $('#categories-years').on('change', function() {
+            var y = this.value;
+            location.href = '/reports' + '?year='+y;
         });
         </script>
 </body>
