@@ -101,30 +101,39 @@ class MainController extends Controller
         return view('categories', compact('category', 'years', 'selectedYear'));
     }
 
-    public function reports() {
+    public function reports(Request $request) {
+        $years = DB::select("SELECT DISTINCT YEAR(date) as year
+                             FROM expenses
+                             WHERE expenses.user_id = ?", [auth()->user()->id]);
+
+        $selectedYear = $request->year;
+        if ($selectedYear == NULL) {
+            $selectedYear = $this->getThisYear();
+        }
         
-        $byMonth = $this->getReportByMonth();
-        $byCategory = $this->getReportByCategory();
+        $byMonth = $this->getReportByMonth($selectedYear);
+        $byCategory = $this->getReportByCategory($selectedYear);
         $top10 = $this->getReportTop10();
         
-        return view('reports', compact('byMonth', 'byCategory', 'top10'));
+        return view('reports', compact('byMonth', 'byCategory', 'top10', 'years', 'selectedYear'));
     }
 
-    public function getReportByMonth() {
+    public function getReportByMonth($year) {
+
         $byMonthReport = DB::select("SELECT MONTH(date) as month, SUM(price) as price 
                                 FROM expenses
-                                WHERE user_id = ? AND  YEAR(date) = ?
-                                GROUP BY MONTH(date)", [auth()->user()->id, Carbon::now()->year]);
+                                WHERE user_id = ? AND YEAR(date) = ?
+                                GROUP BY MONTH(date)", [auth()->user()->id, $year]);
         return $byMonthReport;
     }
 
-    public function getReportByCategory() {
+    public function getReportByCategory($year) {
         $byCategoryReport = DB::select("SELECT types.name as name, SUM(price) as price, MONTH(date) as month, color_code as color
                                 FROM expenses
                                 JOIN types on expenses.type_id = types.id
                                 WHERE YEAR(expenses.date) = ? AND expenses.user_id = ?
                                 GROUP BY MONTH(expenses.date), name, color
-                                ORDER BY MONTH(expenses.date) ASC", [Carbon::now()->year, auth()->user()->id]);
+                                ORDER BY MONTH(expenses.date) ASC", [$year, auth()->user()->id]);
         return $byCategoryReport;
     }
 
