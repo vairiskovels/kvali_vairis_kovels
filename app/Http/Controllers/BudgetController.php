@@ -105,4 +105,11 @@ class BudgetController extends Controller
         return redirect('/budget');
 
     }
+
+    public function getThisMonth() {
+        return Carbon::now()->month;
+    }
+    public function getThisYear() {
+        return Carbon::now()->year;
+    }
 }
