@@ -113,8 +113,8 @@ class MainController extends Controller
     public function getReportByMonth() {
         $byMonthReport = DB::select("SELECT MONTH(date) as month, SUM(price) as price 
                                 FROM expenses
-                                WHERE user_id = ?
-                                GROUP BY MONTH(date)", [auth()->user()->id]);
+                                WHERE user_id = ? AND  YEAR(date) = ?
+                                GROUP BY MONTH(date)", [auth()->user()->id, Carbon::now()->year]);
         return $byMonthReport;
     }
 
