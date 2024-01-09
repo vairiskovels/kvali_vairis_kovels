@@ -11,7 +11,7 @@
                 <h2 class="section-header" id="section-header">Total expenses in {{ $selectedYear }}</h2>
                 <div class="selects">
                     <select name="reports-select" id="reports-select">
-                        <option value="1" selected>Expenses in {{ $selectedYear }}</option>
+                        <option value="1" selected>Expenses in a year</option>
                         <option value="2">Expenses by category</option>
                         <option value="3">Top 10 expenses this month</option>
                     </select>
