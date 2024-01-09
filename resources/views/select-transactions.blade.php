@@ -47,7 +47,6 @@
                         @endforeach
                     </div>
                 </form>
-                
             </div>
         </section>
     </main>
@@ -58,7 +57,7 @@
         var inputs = document.getElementsByClassName("input-wrap");
 
         for (var i = 0; i < inputs.length; i++) {
-            var state = false;
+            var state = true;
             var hiddenNames = ["names[]", "amounts[]", "dates[]"];
             inputs[i].addEventListener("click", function() {
                 var checkbox = this.querySelector('input[type="checkbox"]');

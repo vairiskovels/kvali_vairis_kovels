@@ -424,16 +424,16 @@ class ImportController extends Controller
         $amounts = $request->input('amounts', []);
         $dates = $request->input('dates', []);
         $types = $request->input('types', []);
-        $ids = $request->input('ids', []);    
+        $selectedIds = $request->input('ids', []);
 
-        for ($i = 0; $i < count($ids); $i++) {
+        for ($i = 0; $i < count($selectedIds); $i++) {
             $expense = new Expense();
             $expense->type_id = $types[$i];
             $expense->user_id = auth()->user()->id;
             $expense->name = $names[$i];
             $expense->price = $amounts[$i];
             $expense->date = Carbon::parse($dates[$i]);
-            $expense->internal_id = $ids[$i];
+            $expense->internal_id = $selectedIds[$i];
             $expense->save();
         }
 

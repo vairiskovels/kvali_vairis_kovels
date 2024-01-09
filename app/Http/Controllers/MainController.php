@@ -85,10 +85,18 @@ class MainController extends Controller
                              FROM expenses
                              JOIN types on expenses.type_id = types.id
                              WHERE types.name = ?", [$id]);
+        
+        $distinctYears = Expense::select(DB::raw('DISTINCT YEAR(date) as year'))->pluck('year')->toArray();
 
         $selectedYear = $request->year;
         if ($selectedYear == NULL) {
-            $selectedYear = $this->getThisYear();
+            $last = $distinctYears[0];
+            if ($last != NULL) {
+                $selectedYear = $last;
+            }
+            else {
+                $selectedYear = $this->getThisYear();
+            }
         }
 
         $category = DB::select("SELECT types.name as name, SUM(price) as price, MONTH(date) as month, color_code as color
@@ -105,10 +113,16 @@ class MainController extends Controller
         $years = DB::select("SELECT DISTINCT YEAR(date) as year
                              FROM expenses
                              WHERE expenses.user_id = ?", [auth()->user()->id]);
-
+        $distinctYears = Expense::select(DB::raw('DISTINCT YEAR(date) as year'))->pluck('year')->toArray();
         $selectedYear = $request->year;
         if ($selectedYear == NULL) {
-            $selectedYear = $this->getThisYear();
+            $last = $distinctYears[0];
+            if ($last != NULL) {
+                $selectedYear = $last;
+            }
+            else {
+                $selectedYear = $this->getThisYear();
+            }
         }
         
         $byMonth = $this->getReportByMonth($selectedYear);
